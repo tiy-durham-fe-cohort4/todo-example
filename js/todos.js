@@ -1,26 +1,39 @@
 $(function () {
 
+  var allTodos = [];
+
+  function loadTodos() {
+    allTodos = JSON.parse(localStorage.getItem('todos')) || [];
+  }
+
+  function saveTodos() {
+    localStorage.setItem('todos', JSON.stringify(allTodos));
+  }
+
+  loadTodos();
+  app.renderTodos(allTodos);
+
   $('.todo-form').on('submit', function (e) {
     e.preventDefault();
 
     var txt = $(this).find('.todo-txt');
-    var li = $('<li class="todo-item"><span class="todo-label"></span><button class="todo-remove">X</button></li>');
 
-    li.find('.todo-label').text(txt.val());
+    allTodos.push(app.createTodo(txt.val()));
 
-    //// This is a way to handle remove... There's another
-    // li.find('.todo-remove').on('click', function () {
-    //   li.remove();
-    // });
-
-    $('.todo-list').append(li);
+    app.renderTodos(allTodos);
+    saveTodos();
 
     txt.val('');
   });
 
-  $('.todo-list').on('click', '.todo-remove', function (e) {
-    $(e.target).closest('.todo-item').remove();
-  });
+  $('.todo-list').on('click', '.todo-remove', function () {
+    var li = $(this).closest('.todo-item');
+    var index = li.data('index');
 
+    allTodos.splice(index, 1);
+
+    app.renderTodos(allTodos);
+    saveTodos();
+  });
 
 });
