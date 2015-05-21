@@ -1,27 +1,16 @@
 $(function () {
 
-  var allTodos = [];
-
-  function loadTodos() {
-    allTodos = JSON.parse(localStorage.getItem('todos')) || [];
-  }
-
-  function saveTodos() {
-    localStorage.setItem('todos', JSON.stringify(allTodos));
-  }
-
-  loadTodos();
-  app.renderTodos(allTodos);
+  app.todoList.load();
+  app.renderTodos(app.todoList.all);
 
   $('.todo-form').on('submit', function (e) {
     e.preventDefault();
 
     var txt = $(this).find('.todo-txt');
 
-    allTodos.push(app.createTodo(txt.val()));
+    app.todoList.add(txt.val());
 
-    app.renderTodos(allTodos);
-    saveTodos();
+    app.renderTodos(app.todoList.all);
 
     txt.val('');
   });
@@ -30,10 +19,9 @@ $(function () {
     var li = $(this).closest('.todo-item');
     var index = li.data('index');
 
-    allTodos.splice(index, 1);
+    app.todoList.remove(index);
 
-    app.renderTodos(allTodos);
-    saveTodos();
+    app.renderTodos(app.todoList.all);
   });
 
 });
