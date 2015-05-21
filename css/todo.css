@@ -1,0 +1,13 @@
+body {
+  font-family: sans-serif;
+  color: #333;
+}
+
+input {
+  font-size: 1em;
+  padding: 0.25em;
+}
+
+.todo.done {
+  text-decoration: line-through;
+}

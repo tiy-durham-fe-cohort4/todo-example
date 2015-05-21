@@ -1,27 +1,57 @@
-$(function () {
+// todo-list.js
+app.todos = {
+  all: [],
 
-  app.todoList.load();
-  app.renderTodos(app.todoList.all);
+  get active () {
+    return this.all.filter(function (todo) {
+      return !todo.isDone;
+    });
+  },
 
-  $('.todo-form').on('submit', function (e) {
-    e.preventDefault();
+  get completed () {
+    return this.all.filter(function (todo) {
+      return todo.isDone;
+    });
+  },
+  
+  id: 0,
 
-    var txt = $(this).find('.todo-txt');
+  add: function (todo) {
+    todo = todo.trim();
 
-    app.todoList.add(txt.val());
+    if (!todo.length) return;
 
-    app.renderTodos(app.todoList.all);
+    this.all.push({
+      text: todo,
+      isDone: false,
+      id: ++this.id
+    });
+  },
 
-    txt.val('');
-  });
+  getById: function (todoId) {
+    var result;
+    todoId = parseInt(todoId);
 
-  $('.todo-list').on('click', '.todo-remove', function () {
-    var li = $(this).closest('.todo-item');
-    var index = li.data('index');
+    this.all.some(function (todo) {
+      result = todo;
+      return todo.id === todoId;
+    });
 
-    app.todoList.remove(index);
+    return result;
+  },
 
-    app.renderTodos(app.todoList.all);
-  });
+  remove: function (todoId) {
+    if (typeof todoId === 'function') {
+      var filterFn = todoId;
+      this.all = this.all.filter(function (todo) {
+        return !filterFn(todo);
+      });
+    } else {
+      todoId = parseInt(todoId);
 
-});
+      this.all = this.all.filter(function (todo) {
+        return todo.id !== todoId;
+      });
+    }
+  }
+};
